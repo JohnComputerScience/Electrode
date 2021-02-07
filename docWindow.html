@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+    <title>Documentation Window</title>
+</head>
+<body>
+    <button id="HTML Doc" onclick="htmlWindow()">HTML Documentation!</button>
+    <button id="JS Doc" onclick="jsWindow()">JS Documentation!</button>
+    <button id="Electron Doc" onclick="electronWindow()">Electron Documentation!</button>
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+
+        //sends create htmlWindow order to main
+        function htmlWindow(e) {
+           // e.preventDefault();
+            const { ipcRenderer } = require('electron');
+            ipcRenderer.send('htmlWindow', 'docWindow');
+        }
+        //sends create jsWindow order to main
+        function jsWindow(e) {
+            //e.preventDefault();
+            const { ipcRenderer } = require('electron');
+            ipcRenderer.send('jsWindow', 'docWindow');
+        }
+        //sends create electronWindow order to main
+        function electronWindow(e) {
+            //e.preventDefault();
+            const { ipcRenderer } = require('electron');
+            ipcRenderer.send('electronWindow', 'docWindow');
+        }
+    </script>
+</body>
+</html>

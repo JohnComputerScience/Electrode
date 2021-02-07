@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Electrode</title>
+</head>
+<style>
+aside{
+    width: 40%;
+    padding-left: 10px;
+    padding-right: 10px;
+    float: right;
+    background-color: lightblue;
+    }
+</style>
+<body>
+    <h1>Cool App</h1>
+    
+    <aside>
+        <p>To Do: </p>
+        <ul></ul>
+        <p> Double Click to Remove</p>
+    </aside>
+    <button id="docWindow" onclick="docWindow()">Documentation!</button>
+    <script>
+       
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+        const ul = document.querySelector('ul');
+
+        //sends create docWindow order to main
+        function docWindow() {
+            const { ipcRenderer } = require('electron');
+            ipcRenderer.send('createDocWindow', 'docWindow');
+        }
+
+        //catches add item
+        ipcRenderer.on('item:add', function (e, item) {
+            const li = document.createElement('li');
+            const itemText = document.createTextNode(item);
+            li.appendChild(itemText);
+            ul.appendChild(li);
+        });
+
+        //catches empty/clear item
+        ipcRenderer.on('item:clear', function (e, item) {
+            ul.innerHTML = '';
+        });
+
+        //single item delete
+        ul.addEventListener('dblclick', removeItem);
+
+        function removeItem(e) {
+            e.target.remove();
+        }
+    </script>
+</body>
+</html>

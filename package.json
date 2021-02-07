@@ -1,0 +1,14 @@
+{
+  "name": "electrode",
+  "version": "1.0.0",
+  "description": "Programming helper desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "John Schneider",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^11.2.2"
+  }
+}
