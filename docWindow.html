@@ -14,20 +14,17 @@
         const { ipcRenderer } = electron;
 
         //sends create htmlWindow order to main
-        function htmlWindow(e) {
-           // e.preventDefault();
+        function htmlWindow() {
             const { ipcRenderer } = require('electron');
             ipcRenderer.send('htmlWindow', 'docWindow');
         }
         //sends create jsWindow order to main
-        function jsWindow(e) {
-            //e.preventDefault();
+        function jsWindow() {
             const { ipcRenderer } = require('electron');
             ipcRenderer.send('jsWindow', 'docWindow');
         }
         //sends create electronWindow order to main
-        function electronWindow(e) {
-            //e.preventDefault();
+        function electronWindow() {
             const { ipcRenderer } = require('electron');
             ipcRenderer.send('electronWindow', 'docWindow');
         }

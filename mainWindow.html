@@ -16,9 +16,10 @@ aside{
     <h1>Cool App</h1>
     
     <aside>
-        <p>To Do: </p>
+        <button id="addItem" onclick="addItem()">Add Item to List!</button>
+        <p>To Do List: </p>
         <ul></ul>
-        <p> Double Click to Remove</p>
+        <p> Double Click to Remove Item from List</p>
     </aside>
     <button id="docWindow" onclick="docWindow()">Documentation!</button>
     <script>
@@ -33,13 +34,22 @@ aside{
             ipcRenderer.send('createDocWindow', 'docWindow');
         }
 
-        //catches add item
         ipcRenderer.on('item:add', function (e, item) {
             const li = document.createElement('li');
             const itemText = document.createTextNode(item);
             li.appendChild(itemText);
             ul.appendChild(li);
         });
+        /*
+        ipcRenderer.on('addItem', function (e, item) {
+            const li = document.createElement('li');
+            const itemText = document.createTextNode(item);
+            li.appendChild(itemText);
+            ul.appendChild(li);
+        });*/
+        function addItem() {
+            ipcRenderer.send('addItem', 'addWindow');
+        };
 
         //catches empty/clear item
         ipcRenderer.on('item:clear', function (e, item) {

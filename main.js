@@ -55,9 +55,14 @@ function createAddWindow() {
 
 //catch item:add
 ipcMain.on('item:add', function (e, item) {
-    //console.log(item);
     mainWindow.webContents.send('item:add', item);
     addWindow.close();
+
+});
+
+//catch addWindow send
+ipcMain.on('addItem', function () {
+    createAddWindow();
 
 });
 
@@ -66,6 +71,8 @@ ipcMain.on('createDocWindow', function () {
     createDocWindow();
 
 });
+
+
 
 //{ webPreferences: { nodeIntegration: true, contextIsolation: false } }
 //catches the different documentations sent from docWindow
