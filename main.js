@@ -8,32 +8,6 @@ var mainWindow;
 var addWindow;
 var docWindow;
 
-//Listen for app to be ready
-app.on('ready', function () {
-    //create new window
-    mainWindow = new BrowserWindow(
-        {
-            width: 600,
-            height: 800,
-            webPreferences: {
-                nodeIntegration: true
-            }
-        });
-    //load HTML into window
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'mainWindow.html'),
-        protocal: 'file:',
-        slashes: true
-    }));
-    //quit app when closed
-    mainWindow.on('closed', function(){
-        app.quit();
-    });
-    //build menu from template
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    //insert menu
-    Menu.setApplicationMenu(mainMenu);
-});
 
 //handle  docWindow
 function createDocWindow() {
@@ -43,14 +17,15 @@ function createDocWindow() {
             width: 600,
             title: 'Documentation',
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
     //load HTML into window
     docWindow.loadFile("docWindow.html");
     //garbage collection
     docWindow.on('close', function () {
-        console.log("docWindow = null");
+        //console.log("docWindow = null");
         docWindow = null;
     });
 }
@@ -92,17 +67,20 @@ ipcMain.on('createDocWindow', function () {
 
 });
 
+//{ webPreferences: { nodeIntegration: true, contextIsolation: false } }
 //catches the different documentations sent from docWindow
 ipcMain.on('htmlWindow', function (e, target) {
-    const view = new BrowserView({ webPreferences: { nodeIntegration: true } });
-    //console.log("Hello!");
-    view.setBounds({ x: 25, y: 100, width: 450, height: 450, });
-    view.webContents.loadURL('https://www.w3schools.com/html/default.asp');
+    var view = new BrowserView();
     docWindow.setBrowserView(view);
+    console.log("Hello!");
+    view.setBounds({ x: 10, y: 50, width: 575, height: 485 });
+    view.webContents.loadURL('https://www.w3schools.com/html/default.asp');
+    
 });
 
+/*
 ipcMain.on('jsWindow', function (e, target) {
-    const view = new BrowserView({ webPreferences: { nodeIntegration: true } });
+    const view = new BrowserView({ webPreferences: { nodeIntegration: true, contextIsolation: false } });
 
     view.setBounds({ x: 25, y: 100, width: 450, height: 450 });
     view.webContents.loadURL('https://www.w3schools.com/js/default.asp');
@@ -111,13 +89,14 @@ ipcMain.on('jsWindow', function (e, target) {
 });
 
 ipcMain.on('electronWindow', function (e, target) {
-    const view = new BrowserView({ webPreferences: { nodeIntegration: true } });
+    const view = new BrowserView({ webPreferences: { nodeIntegration: true, contextIsolation: false } });
 
     view.setBounds({ x: 25, y: 100, width: 450, height: 450 });
     view.webContents.loadURL('https://www.electronjs.org/docs');
 
     docWindow.setBrowserView(view);
 });
+*/
 
 //create menu template
 const mainMenuTemplate = [
@@ -171,3 +150,30 @@ if (process.env.NODE_ENV !== 'production') {
         ]
     });
 }
+
+//Listen for app to be ready
+app.on('ready', function () {
+    //create new window
+    mainWindow = new BrowserWindow(
+        {
+            width: 600,
+            height: 800,
+            webPreferences: {
+                nodeIntegration: true
+            }
+        });
+    //load HTML into window
+    mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'mainWindow.html'),
+        protocal: 'file:',
+        slashes: true
+    }));
+    //quit app when closed
+    mainWindow.on('closed', function () {
+        app.quit();
+    });
+    //build menu from template
+    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    //insert menu
+    Menu.setApplicationMenu(mainMenu);
+});
