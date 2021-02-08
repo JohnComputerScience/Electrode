@@ -70,33 +70,31 @@ ipcMain.on('createDocWindow', function () {
 //{ webPreferences: { nodeIntegration: true, contextIsolation: false } }
 //catches the different documentations sent from docWindow
 ipcMain.on('htmlWindow', function (e, target) {
-    var view = new BrowserView();
+    //console.log("Hello!");
+    const view = new BrowserView();
     docWindow.setBrowserView(view);
-    console.log("Hello!");
+    
     view.setBounds({ x: 10, y: 50, width: 575, height: 485 });
     view.webContents.loadURL('https://www.w3schools.com/html/default.asp');
     
 });
 
-/*
 ipcMain.on('jsWindow', function (e, target) {
-    const view = new BrowserView({ webPreferences: { nodeIntegration: true, contextIsolation: false } });
-
-    view.setBounds({ x: 25, y: 100, width: 450, height: 450 });
-    view.webContents.loadURL('https://www.w3schools.com/js/default.asp');
-
+    const view = new BrowserView();
     docWindow.setBrowserView(view);
+
+    view.setBounds({ x: 10, y: 50, width: 575, height: 485 });
+    view.webContents.loadURL('https://www.w3schools.com/js/default.asp');
 });
 
 ipcMain.on('electronWindow', function (e, target) {
-    const view = new BrowserView({ webPreferences: { nodeIntegration: true, contextIsolation: false } });
-
-    view.setBounds({ x: 25, y: 100, width: 450, height: 450 });
-    view.webContents.loadURL('https://www.electronjs.org/docs');
-
+    const view = new BrowserView();
     docWindow.setBrowserView(view);
+
+    view.setBounds({ x: 10, y: 50, width: 575, height: 485 });
+    view.webContents.loadURL('https://www.electronjs.org/docs');
 });
-*/
+
 
 //create menu template
 const mainMenuTemplate = [
