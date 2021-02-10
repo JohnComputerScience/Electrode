@@ -1,6 +1,7 @@
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const fs = require('fs');
 
 const { app, BrowserWindow, Menu, ipcMain, BrowserView } = electron;
 
@@ -56,11 +57,17 @@ function createAddWindow() {
 //catch item:add
 ipcMain.on('item:add', function (e, item) {
     mainWindow.webContents.send('item:add', item);
+    fs.appendFile('eData.txt', item + ',', err => {
+        if (err) {
+            console.error(err)
+            return
+        }
+    });
     addWindow.close();
 
 });
 
-//catch addWindow send
+//catch addItem send from mainWindow
 ipcMain.on('addItem', function () {
     createAddWindow();
 
@@ -102,6 +109,26 @@ ipcMain.on('electronWindow', function (e, target) {
     view.webContents.loadURL('https://www.electronjs.org/docs');
 });
 
+ipcMain.on('importItems', function (e, target) {
+        //console.log('it worked');
+        const contents = fs.readFileSync('eData.txt')
+        var item;
+
+        for (let i = 0; i < contents.length; i++) {
+            if (contents.substring(i, 1) === ',') {
+                const li = document.createElement('li');
+                const itemText = document.createTextNode(item);
+                li.appendChild(itemText);
+                ul.appendChild(li);
+                item = '';
+            }
+            else {
+                item = item + contents.substring(i, 1);
+            }
+        }
+});
+
+
 
 //create menu template
 const mainMenuTemplate = [
@@ -132,9 +159,11 @@ const mainMenuTemplate = [
 ];
 
 //if mac, add empty object to menu
+/*
 if (process.platform == 'darwin') {
     mainMenuTemplate.unshift({});
 }
+*/
 
 //add developer tools if in prduction
 if (process.env.NODE_ENV !== 'production') {
@@ -173,6 +202,8 @@ app.on('ready', function () {
         protocal: 'file:',
         slashes: true
     }));
+    
+
     //quit app when closed
     mainWindow.on('closed', function () {
         app.quit();

@@ -20,6 +20,7 @@ aside{
         <p>To Do List: </p>
         <ul></ul>
         <p> Double Click to Remove Item from List</p>
+        <button id="importItems" onclick="importItems()">Load Items from Previous Sessions!</button>
     </aside>
     <button id="docWindow" onclick="docWindow()">Documentation!</button>
     <script>
@@ -27,6 +28,9 @@ aside{
         const electron = require('electron');
         const { ipcRenderer } = electron;
         const ul = document.querySelector('ul');
+        const fs = require('fs');
+
+
 
         //sends create docWindow order to main
         function docWindow() {
@@ -40,13 +44,11 @@ aside{
             li.appendChild(itemText);
             ul.appendChild(li);
         });
-        /*
-        ipcRenderer.on('addItem', function (e, item) {
-            const li = document.createElement('li');
-            const itemText = document.createTextNode(item);
-            li.appendChild(itemText);
-            ul.appendChild(li);
-        });*/
+
+        function importItems() {
+            ipcRenderer.send('importItems');
+        };
+
         function addItem() {
             ipcRenderer.send('addItem', 'addWindow');
         };
@@ -54,7 +56,37 @@ aside{
         //catches empty/clear item
         ipcRenderer.on('item:clear', function (e, item) {
             ul.innerHTML = '';
+            fs.writeFile('eData.txt', '', err => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+            });
         });
+
+        //catches the add items to list from file
+        /*
+        ipcRenderer.on('startItem', function (e) {
+            console.log('it worked');
+            const contents = fs.readFileSync('eData.txt')
+            var item;
+
+            for (let i = 0; i < contents.length; i++) {
+                if (contents.substr(i, 1) === ',') {
+                    const li = document.createElement('li');
+                    const itemText = document.createTextNode(item);
+                    li.appendChild(itemText);
+                    ul.appendChild(li);
+                    item = '';
+                }
+                else {
+                    item = item + contents.substr(i, 1);
+                }
+            }
+
+
+        });
+        */
 
         //single item delete
         ul.addEventListener('dblclick', removeItem);
