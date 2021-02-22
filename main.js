@@ -9,6 +9,24 @@ var mainWindow;
 var addWindow;
 var docWindow;
 
+//create main window
+function createMainWindow() {
+    mainWindow = new BrowserWindow(
+        {
+            width: 600,
+            height: 800,
+            webPreferences: {
+                nodeIntegration: true
+            }
+        })
+
+    mainWindow.loadFile('mainWindow.html');
+
+    //build menu from template
+    //const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    //insert menu
+    //Menu.setApplicationMenu(mainMenu);
+};
 
 //handle  docWindow
 function createDocWindow() {
@@ -186,24 +204,32 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 //Listen for app to be ready
+app.whenReady().then(createMainWindow)
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
+})
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow()
+    }
+})
+/*
 app.on('ready', function () {
-    //create new window
-    mainWindow = new BrowserWindow(
-        {
-            width: 600,
-            height: 800,
-            webPreferences: {
-                nodeIntegration: true
-            }
-        });
+    
     //load HTML into window
+    /*
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'mainWindow.html'),
-        protocal: 'file:',
-        slashes: true
+       pathname: path.join(__dirname, 'mainWindow.html'),
+       protocal: 'file:',
+       slashes: true
     }));
     
-
+    
+       
     //quit app when closed
     mainWindow.on('closed', function () {
         app.quit();
@@ -213,3 +239,4 @@ app.on('ready', function () {
     //insert menu
     Menu.setApplicationMenu(mainMenu);
 });
+*/
