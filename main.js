@@ -20,6 +20,10 @@ function createMainWindow() {
             }
         })
 
+    mainWindow.on('close', function () {
+        mainWindow = null;
+    });
+
     mainWindow.loadFile('mainWindow.html');
 
     //build menu from template
@@ -28,7 +32,7 @@ function createMainWindow() {
     //Menu.setApplicationMenu(mainMenu);
 };
 
-//handle  docWindow
+//create  docWindow
 function createDocWindow() {
     docWindow = new BrowserWindow(
         {
@@ -49,7 +53,7 @@ function createDocWindow() {
     });
 }
 
-//handle add window
+//create add window
 function createAddWindow() {
     addWindow = new BrowserWindow(
         {
@@ -61,11 +65,7 @@ function createAddWindow() {
             }
         });
     //load HTML into window
-    addWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'addWindow.html'),
-        protocal: 'file:',
-        slashes: true
-    }));
+    addWindow.loadFile("addWindow.html");
     //garbage collection
     addWindow.on('close', function () {
         addWindow = null;
@@ -75,12 +75,14 @@ function createAddWindow() {
 //catch item:add
 ipcMain.on('item:add', function (e, item) {
     mainWindow.webContents.send('item:add', item);
+
     fs.appendFile('eData.txt', item + ',', err => {
         if (err) {
             console.error(err)
             return
         }
     });
+    
     addWindow.close();
 
 });
@@ -88,18 +90,13 @@ ipcMain.on('item:add', function (e, item) {
 //catch addItem send from mainWindow
 ipcMain.on('addItem', function () {
     createAddWindow();
-
 });
 
 //catch newDocWindow send
 ipcMain.on('createDocWindow', function () {
     createDocWindow();
-
 });
 
-
-
-//{ webPreferences: { nodeIntegration: true, contextIsolation: false } }
 //catches the different documentations sent from docWindow
 ipcMain.on('htmlWindow', function (e, target) {
     //console.log("Hello!");
@@ -110,7 +107,6 @@ ipcMain.on('htmlWindow', function (e, target) {
     view.webContents.loadURL('https://www.w3schools.com/html/default.asp');
     
 });
-
 ipcMain.on('jsWindow', function (e, target) {
     const view = new BrowserView();
     docWindow.setBrowserView(view);
@@ -118,7 +114,6 @@ ipcMain.on('jsWindow', function (e, target) {
     view.setBounds({ x: 10, y: 50, width: 575, height: 485 });
     view.webContents.loadURL('https://www.w3schools.com/js/default.asp');
 });
-
 ipcMain.on('electronWindow', function (e, target) {
     const view = new BrowserView();
     docWindow.setBrowserView(view);
@@ -127,25 +122,19 @@ ipcMain.on('electronWindow', function (e, target) {
     view.webContents.loadURL('https://www.electronjs.org/docs');
 });
 
+//imports the eData file and pareses each item which is sent to addWindow to be added
 ipcMain.on('importItems', function (e, target) {
-        //console.log('it worked');
-        const contents = fs.readFileSync('eData.txt')
-        var item;
-
-        for (let i = 0; i < contents.length; i++) {
-            if (contents.substring(i, 1) === ',') {
-                const li = document.createElement('li');
-                const itemText = document.createTextNode(item);
-                li.appendChild(itemText);
-                ul.appendChild(li);
-                item = '';
-            }
-            else {
-                item = item + contents.substring(i, 1);
-            }
+    //console.log('it worked');
+    fs.readFile('eData.txt', 'utf8', function (err, data) {
+        if (err) { console.log('error', err); }
+        //var item;
+        var splitItems = data.split(',');
+        for (let i = 0; i < (splitItems.length - 1); i++) {
+            var item = splitItems[i];
+            mainWindow.webContents.send('item:add', item);
         }
+    });
 });
-
 
 
 //create menu template
@@ -217,26 +206,3 @@ app.on('activate', () => {
         createWindow()
     }
 })
-/*
-app.on('ready', function () {
-    
-    //load HTML into window
-    /*
-    mainWindow.loadURL(url.format({
-       pathname: path.join(__dirname, 'mainWindow.html'),
-       protocal: 'file:',
-       slashes: true
-    }));
-    
-    
-       
-    //quit app when closed
-    mainWindow.on('closed', function () {
-        app.quit();
-    });
-    //build menu from template
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    //insert menu
-    Menu.setApplicationMenu(mainMenu);
-});
-*/
