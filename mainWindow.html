@@ -30,8 +30,6 @@ aside{
         const ul = document.querySelector('ul');
         const fs = require('fs');
 
-
-
         //sends create docWindow order to main
         function docWindow() {
             const { ipcRenderer } = require('electron');
@@ -63,30 +61,6 @@ aside{
                 }
             });
         });
-
-        //catches the add items to list from file
-        /*
-        ipcRenderer.on('startItem', function (e) {
-            console.log('it worked');
-            const contents = fs.readFileSync('eData.txt')
-            var item;
-
-            for (let i = 0; i < contents.length; i++) {
-                if (contents.substr(i, 1) === ',') {
-                    const li = document.createElement('li');
-                    const itemText = document.createTextNode(item);
-                    li.appendChild(itemText);
-                    ul.appendChild(li);
-                    item = '';
-                }
-                else {
-                    item = item + contents.substr(i, 1);
-                }
-            }
-
-
-        });
-        */
 
         //single item delete
         ul.addEventListener('dblclick', removeItem);

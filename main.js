@@ -27,9 +27,9 @@ function createMainWindow() {
     mainWindow.loadFile('mainWindow.html');
 
     //build menu from template
-    //const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
     //insert menu
-    //Menu.setApplicationMenu(mainMenu);
+    Menu.setApplicationMenu(mainMenu);
 };
 
 //create  docWindow
@@ -166,11 +166,10 @@ const mainMenuTemplate = [
 ];
 
 //if mac, add empty object to menu
-/*
 if (process.platform == 'darwin') {
     mainMenuTemplate.unshift({});
 }
-*/
+
 
 //add developer tools if in prduction
 if (process.env.NODE_ENV !== 'production') {
