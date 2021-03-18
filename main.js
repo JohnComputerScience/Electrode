@@ -92,6 +92,21 @@ ipcMain.on('addItem', function () {
     createAddWindow();
 });
 
+//catch removeItem send from mainWindow
+ipcMain.on('removeItem', function (e) {
+    fs.readFile('eData.txt', 'utf8', function (err, e) {
+        if (err) { console.log('error', err); }
+        //var item;
+        var splitItems = e.split(',');
+        for (let i = 0; i < (splitItems.length - 1); i++) {
+            var item = splitItems[i];
+            if (e === item) {
+                item = ""
+            }
+        }
+    });
+});
+
 //catch newDocWindow send
 ipcMain.on('createDocWindow', function () {
     createDocWindow();
@@ -165,12 +180,6 @@ const mainMenuTemplate = [
     }
 ];
 
-//if mac, add empty object to menu
-//if (process.platform == 'darwin') {
-//    mainMenuTemplate.unshift({});
-//}
-
-
 //add developer tools if in prduction
 if (process.env.NODE_ENV !== 'production') {
     mainMenuTemplate.push({
@@ -195,13 +204,12 @@ if (process.env.NODE_ENV !== 'production') {
 app.whenReady().then(createMainWindow)
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+    app.quit()
 })
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow()
     }
+
 })

@@ -64,8 +64,8 @@ aside{
 
         //single item delete
         ul.addEventListener('dblclick', removeItem);
-
         function removeItem(e) {
+            ipcRenderer.send('removeItem', e);
             e.target.remove();
         }
     </script>
